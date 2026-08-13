@@ -14,6 +14,29 @@ write once → understand it → reuse it → export anywhere
 >
 > TrainWhen is currently being designed and implemented. Expect breaking syntax changes before the format stabilizes.
 
+## Design principles
+
+**Immediately understandable.**  
+An athlete or coach should substantially understand a TrainWhen file before reading the specification.
+
+**Markdown first.**  
+Use established plain-text conventions where they work. Add TrainWhen syntax only when the training domain requires it.
+
+**Don't repeat yourself.**  
+Define shared information once, inherit it, and override it only where necessary.
+
+**Deterministic.**  
+Software should not require AI inference to determine what a canonical prescription means.
+
+**Composable.**  
+Exercises build workouts. Workouts build progressions. Progressions build larger training structures.
+
+**Explicit when necessary.**  
+Defaults make common prescriptions concise without preventing a coach from saying exactly what is intended.
+
+**Vendor-independent.**  
+TrainingPeaks, Garmin, Intervals.icu, Strava, and other platforms are adapters and destinations, not canonical storage.
+
 ## Start simple.
 
 A steady aerobic workout should look like a steady aerobic workout:
@@ -208,7 +231,7 @@ TrainWhen does not assume seven-day training cycles. A microcycle might contain 
 
 Coaches and athletes are also first-class TrainWhen objects. They provide context used by the training hierarchy rather than sitting inside it.
 
-## Plain-text objects
+## Build a library, not a pile of copies
 
 TrainWhen objects are readable Markdown files.
 
@@ -247,7 +270,7 @@ Likewise:
 
 The filesystem organizes TrainWhen objects; it should not determine their semantics.
 
-## Write once, reference later.
+### Write once, reference later.
 
 Copying workouts into every training plan defeats the purpose of having structured source.
 
@@ -362,29 +385,6 @@ TrainWhen remains:
 ```
 
 **Adapters accommodate vendors. The canonical language does not contort itself around them.**
-
-## Design principles
-
-**Immediately understandable.**  
-An athlete or coach should substantially understand a TrainWhen file before reading the specification.
-
-**Deterministic.**  
-Software should not require AI inference to determine what a canonical prescription means.
-
-**Don't repeat yourself.**  
-Define shared information once, inherit it, and override it only where necessary.
-
-**Composable.**  
-Exercises build workouts. Workouts build progressions. Progressions build larger training structures.
-
-**Explicit when necessary.**  
-Convenient defaults must never prevent a prescription from specifying exactly what it means.
-
-**Vendor-independent.**  
-TrainingPeaks, Garmin, Intervals.icu, Strava, and other platforms are adapters and destinations, not canonical storage.
-
-**Markdown first.**  
-Use existing plain-text conventions where they work. Add TrainWhen syntax only when the training domain requires it.
 
 ## v0.0.1
 
