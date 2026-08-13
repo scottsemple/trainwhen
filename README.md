@@ -14,7 +14,7 @@ write once → understand it → reuse it → export anywhere
 >
 > TrainWhen is currently being designed and implemented. Expect breaking syntax changes before the format stabilizes.
 
-## Start simple
+## Start simple.
 
 A steady aerobic workout should look like a steady aerobic workout:
 
@@ -68,11 +68,9 @@ When the prescription needs to differ from the default, say so:
 
 **Define defaults once. Override them where necessary.**
 
-## Training isn't always simple
+## Training isn't always simple.
 
-TrainWhen is being designed against real training structures rather than only simple steady-state and interval workouts.
-
-One of its initial test cases is Verkhoshansky's explosive-strength progression for runners.
+TrainWhen is being designed against real training structures rather than only simple steady-state and interval workouts. One of its initial test cases is Verkhoshansky's explosive-strength progression for runners.
 
 The first session can be expressed as:
 
@@ -94,9 +92,9 @@ The first session can be expressed as:
 
 The nesting carries meaning.
 
-`rest` is passive rest between sets.
+`rest` is always *passive* rest between sets.
 
-`recover` is active recovery between series. Recovery may have its own prescription and does not necessarily mean easy:
+`recover` is always active recovery between series or sets. Recovery may have its own prescription and does not necessarily mean easy:
 
 ```text
 - recover 400 m @ marathon pace
@@ -110,7 +108,7 @@ The structure also lets TrainWhen derive useful information rather than requirin
 2 series × 6 sets × 8 reps = 96 jumps
 ```
 
-## Progressions are first-class
+## Progressions are first-class.
 
 Training is not merely a collection of independent workouts.
 
@@ -154,11 +152,9 @@ A16  LJ  4 series × 10 sets × 10 reps   rest 10 s   recover 14 min
 
 The compact representation is useful for titles and summaries. The canonical executable prescription remains explicit and nested so that a human does not have to memorize positional shorthand.
 
-### Don't repeat shared prescription
+### Don't repeat shared prescription.
 
-If all 16 sessions use the same warmup, cooldown, load, or other prescription, those values should not be copied into all 16 workouts.
-
-They belong at the progression level and are inherited by its workouts.
+If all 16 sessions use the same warmup, cooldown, load, or other prescription, those values should not be copied into all 16 workouts. They belong at the progression level and are inherited by its workouts.
 
 An individual workout specifies something again only when it differs.
 
@@ -170,13 +166,11 @@ The general rule is:
 
 A progression may eventually have a **gateway**: a readiness workout or assessment that determines whether an athlete is ready for the progression and where that athlete should enter it.
 
-A more advanced athlete should not necessarily have to begin at A01.
-
-A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
+A more advanced athlete should not necessarily have to begin at A01. A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
 
 The exact gateway and advancement grammar is not part of v0.0.1.
 
-## Compose training
+## Compose training.
 
 TrainWhen's training hierarchy is:
 
@@ -223,7 +217,7 @@ An early project might look like:
 ```text
 trainwhen/
 ├── coach.md
-├── athlete.md
+├── athletes/
 ├── exercises/
 ├── workouts/
 ├── progressions/
@@ -253,7 +247,7 @@ Likewise:
 
 The filesystem organizes TrainWhen objects; it should not determine their semantics.
 
-## Write once, reference later
+## Write once, reference later.
 
 Copying workouts into every training plan defeats the purpose of having structured source.
 
@@ -301,7 +295,7 @@ The workout or progression describes how that exercise is prescribed.
 
 For example, `35-45% squat 1RM` belongs to the explosive-strength prescription, not intrinsically to the definition of a half-squat jump.
 
-## Markdown first
+## Markdown first.
 
 TrainWhen uses Markdown as its document format and adds deterministic training syntax only where training semantics require it.
 
@@ -335,7 +329,7 @@ Hyphens identify ordered executable items:
 
 TrainWhen files remain Markdown. They are not YAML documents, and TrainWhen does not require YAML configuration or front matter unless a future requirement demonstrates a need for it.
 
-## Plain text is canonical
+## Plain text is canonical.
 
 The TrainWhen source is the source of truth.
 
@@ -359,7 +353,7 @@ Vendor formats and visualizations are generated representations:
 
 A vendor's syntax does not define TrainWhen's syntax.
 
-If an external platform requires a nonstandard representation—for example, `mtr` rather than standard `m` for metres—the adapter should translate it.
+If an external platform requires a nonstandard representation—for example, `mtr` rather than the international standard of `m` for metres—the adapter should translate it.
 
 TrainWhen remains:
 
