@@ -115,9 +115,7 @@ The first session can be expressed as:
 
 The nesting carries meaning.
 
-`rest` is always *passive* rest between sets.
-
-`recover` is always active recovery between series or sets. Recovery may have its own prescription and does not necessarily mean easy:
+`rest` is always *passive* rest between sets. `recover` is always active recovery between series or sets. Recovery may have its own prescription and does not necessarily mean easy:
 
 ```text
 - recover 400 m @ marathon pace
@@ -135,7 +133,7 @@ The structure also lets TrainWhen derive useful information rather than requirin
 
 Training is not merely a collection of independent workouts.
 
-A **progression** describes how training changes across exposures.
+A **progression** describes how training changes over time.
 
 It may change:
 
@@ -169,9 +167,7 @@ A15  SJ  4 series × 10 sets × 10 reps   rest 10 s   recover 14 min
 A16  LJ  4 series × 10 sets × 10 reps   rest 10 s   recover 14 min
 ```
 
-`SJ` is a half-squat jump—not a full squat jump.
-
-`LJ` is an alternating lunge jump.
+`SJ` is a half-squat jump—not a full squat jump. `LJ` is an alternating lunge jump.
 
 The compact representation is useful for titles and summaries. The canonical executable prescription remains explicit and nested so that a human does not have to memorize positional shorthand.
 
