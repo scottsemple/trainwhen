@@ -2,9 +2,7 @@
 
 **Training plans should belong to coaches and athletes, not training platforms.**
 
-TrainWhen is an open, plain-text system for writing workouts, workout progressions, and training plans.
-
-The canonical source is readable Markdown. It can be versioned with Git, shared without proprietary software, and eventually exported to training platforms, calendars, FIT files, CSV, and other formats.
+TrainWhen is an open, plain-text system for writing workouts, workout progressions, and training plans. The canonical source is readable Markdown. It can be versioned with Git, shared without proprietary software, and eventually exported to training platforms, calendars, FIT files, CSV, and other formats.
 
 ```text
 write once → understand it → reuse it → export anywhere
@@ -17,7 +15,7 @@ write once → understand it → reuse it → export anywhere
 ## Design principles
 
 **Immediately understandable.**  
-An athlete or coach should substantially understand a TrainWhen file before reading the specification.
+An athlete or coach should substantially understand a TrainWhen file before reading the official specification.
 
 **Markdown first.**  
 Use established plain-text conventions where they work. Add TrainWhen syntax only when the training domain requires it.
@@ -26,16 +24,16 @@ Use established plain-text conventions where they work. Add TrainWhen syntax onl
 Define shared information once, inherit it, and override it only where necessary.
 
 **Deterministic.**  
-Software should not require AI inference to determine what a canonical prescription means.
+A valid TrainWhen prescription has an unambiguous meaning. Software should be able to parse it without guessing.
 
 **Composable.**  
-Exercises build workouts. Workouts build progressions. Progressions build larger training structures.
+Exercises build workouts. Workouts build progressions. Progressions build training cycles and, ultimately, training plans.
 
 **Explicit when necessary.**  
 Defaults make common prescriptions concise without preventing a coach from saying exactly what is intended.
 
 **Vendor-independent.**  
-TrainingPeaks, Garmin, Intervals.icu, Strava, and other platforms are adapters and destinations, not canonical storage.
+TrainWhen is the source of truth. Garmin, TrainingPeaks, Intervals.icu, Strava, and other platforms are places to send or receive training—not where the canonical plan has to live.
 
 ## Start simple.
 
@@ -93,12 +91,12 @@ When the prescription needs to differ from the default, say so:
 
 ## Training isn't always simple.
 
-TrainWhen is being designed against real training structures rather than only simple steady-state and interval workouts. One of its initial test cases is Verkhoshansky's explosive-strength progression for runners.
+TrainWhen is being designed against real training structures rather than only simple steady-state and interval workouts. One of its initial test cases is Verkhoshansky's explosive-strength progression for runners. ([source](https://www.verkhoshansky.com/Portals/0/Book/BTS%20in%20ER%20Index.pdf))
 
 The first session can be expressed as:
 
 ```text
-# Explosive Strength
+# Explosive Strength - A01
 
 - warmup: basic-ramp
 
@@ -113,7 +111,7 @@ The first session can be expressed as:
   - 10 min or until HR stabilizes
 ```
 
-The nesting carries meaning.
+Bullets represent a sequence; nesting, a hierarchy.
 
 `rest` is always *passive* rest between sets. `recover` is always active recovery between series or sets. Recovery may have its own prescription and does not necessarily mean easy:
 
@@ -123,17 +121,9 @@ The nesting carries meaning.
 
 Warmups and cooldowns are reusable workouts. A RAMP warmup can also be prescribed as a complete workout—for example, when it represents an appropriate session for an athlete just starting out.
 
-The structure also lets TrainWhen derive useful information rather than requiring it to be entered twice:
-
-```text
-2 series × 6 sets × 8 reps = 96 jumps
-```
-
 ## Progressions are first-class.
 
-Training is not merely a collection of independent workouts.
-
-A **progression** describes how training changes over time.
+Training is not merely a collection of independent workouts. A **progression** describes how training changes over time.
 
 It may change:
 
@@ -167,25 +157,21 @@ A15  SJ  4 series × 10 sets × 10 reps   rest 10 s   recover 14 min
 A16  LJ  4 series × 10 sets × 10 reps   rest 10 s   recover 14 min
 ```
 
-`SJ` is a half-squat jump—not a full squat jump. `LJ` is an alternating lunge jump.
+(`SJ` is a half-squat jump—not a full squat jump. `LJ` is an alternating lunge jump.)
 
 The compact representation is useful for titles and summaries. The canonical executable prescription remains explicit and nested so that a human does not have to memorize positional shorthand.
 
-### Don't repeat shared prescription.
+### Don't repeat a shared prescription.
 
 If all 16 sessions use the same warmup, cooldown, load, or other prescription, those values should not be copied into all 16 workouts. They belong at the progression level and are inherited by its workouts.
 
 An individual workout specifies something again only when it differs.
 
-The general rule is:
-
-> **Define a value once at the highest useful scope. Inherit it downward. Override it explicitly where necessary.**
+**Define a value once at the highest useful scope. Inherit it downward. Override it explicitly where necessary.**
 
 ### Gateways
 
-A progression may eventually have a **gateway**: a readiness workout or assessment that determines whether an athlete is ready for the progression and where that athlete should enter it.
-
-A more advanced athlete should not necessarily have to begin at A01. A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
+Progression should ideally have **gateway** workouts: a readiness test that determines whether an athlete is ready for the progression and where that athlete should enter it. A more advanced athlete should not necessarily have to begin at A01. A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
 
 The exact gateway and advancement grammar is not part of v0.0.1.
 
@@ -223,11 +209,11 @@ A more sophisticated plan might use:
 workout → progression → microcycle → mesocycle → plan
 ```
 
-TrainWhen does not assume seven-day training cycles. A microcycle might contain 7, 10, 14, or another number of days.
+TrainWhen does not assume seven-day microcycles. They may contain 7, 10, 14, or another number of days.
 
 Coaches and athletes are also first-class TrainWhen objects. They provide context used by the training hierarchy rather than sitting inside it.
 
-## Build a library, not a pile of copies
+## Build a library, not a pile of copies.
 
 TrainWhen objects are readable Markdown files.
 
@@ -319,14 +305,6 @@ For example, `35-45% squat 1RM` belongs to the explosive-strength prescription, 
 TrainWhen uses Markdown as its document format and adds deterministic training syntax only where training semantics require it.
 
 Where established Markdown conventions already solve a problem, TrainWhen should use them rather than inventing alternatives.
-
-For example, Markdown comments use HTML comment syntax:
-
-```text
-<!-- This is a comment. -->
-```
-
-TrainWhen does not need to invent `//` comments.
 
 Its structured training syntax favors familiar conventions:
 
@@ -442,9 +420,7 @@ TrainWhen is not intended to:
 
 ## Project status
 
-TrainWhen is currently an experimental language design moving toward its first parser.
-
-The syntax shown here is intended to communicate the direction of the project, not promise backward compatibility.
+TrainWhen is currently an experimental language design moving toward its first parser. The syntax shown here is intended to communicate the direction of the project, not promise backward compatibility.
 
 Examples and counterexamples are particularly valuable at this stage: the grammar should be driven by real training prescriptions rather than abstract language design.
 
