@@ -2,11 +2,11 @@
 
 **Training plans should belong to coaches and athletes, not training platforms.**
 
-TrainWhen is an open, plain-text system for writing workouts, workout progressions, and training plans.
+TrainWhen is an open, plain-text system for writing workouts, workout progressions, and training plans. The canonical source is readable **Obsidian-flavored Markdown**. It can be versioned with Git, shared without proprietary software, reused instead of copied, and eventually exported to training platforms, calendars, FIT files, CSV, and other formats.
 
-The canonical source is readable **Obsidian-flavored Markdown**. TrainWhen builds on an established ecosystem of apps and plugins while keeping training source as portable plain text that can be versioned with Git, read without proprietary software, reused instead of copied, and exported to other systems and formats.
-
-**Write once. Understand it. Reuse it. Export anywhere.**
+```text
+write once → understand it → reuse it → export anywhere
+```
 
 > **Status: v0.0.1 — experimental**
 >
@@ -15,7 +15,7 @@ The canonical source is readable **Obsidian-flavored Markdown**. TrainWhen build
 ## Design principles
 
 **Immediately understandable.**  
-An athlete or coach should substantially understand a TrainWhen file before reading the specification.
+An athlete or coach should substantially understand a TrainWhen file before reading the official specification.
 
 **Markdown first.**  
 Use established Markdown conventions where they work. TrainWhen uses Obsidian-flavored Markdown as its baseline and adds syntax only where training semantics require it.
@@ -27,7 +27,7 @@ Define shared information once, inherit it, and override it only where necessary
 A valid TrainWhen prescription has an unambiguous meaning. Software should be able to parse it without guessing.
 
 **Composable.**  
-Exercises build workouts. Workouts build progressions. Progressions build larger training structures.
+Exercises build workouts. Workouts build progressions. Progressions build training cycles and, ultimately, training plans.
 
 **Explicit when necessary.**  
 Defaults make common prescriptions concise without preventing a coach from saying exactly what is intended.
@@ -35,15 +35,17 @@ Defaults make common prescriptions concise without preventing a coach from sayin
 **Vendor-independent.**  
 TrainWhen is the source of truth. Garmin, TrainingPeaks, Intervals.icu, Strava, and other platforms are places to send or receive training—not where the canonical plan has to live.
 
-## Get started
+## Start simple.
 
-A steady aerobic workout can be:
+A steady aerobic workout should look like a steady aerobic workout:
 
 ```text
 - run 45 min @ 80%
 ```
 
-A coach defines what a bare percentage means:
+TrainWhen avoids repeating information that is already established by context.
+
+A coach can define the default benchmark used for each activity:
 
 ```text
 # Coach
@@ -53,7 +55,7 @@ benchmark:
   bike: FTP
 ```
 
-An athlete supplies the values:
+An athlete supplies individual benchmark values:
 
 ```text
 # Athlete
@@ -75,9 +77,9 @@ So:
 - run 45 min @ 80%
 ```
 
-inherits `AnT HR` as the coach's running benchmark and resolves it using the athlete's running value.
+can resolve against the coach's default running benchmark and the athlete's corresponding value.
 
-Need something different? Say so locally:
+When the prescription needs to differ from the default, say so:
 
 ```text
 - run 45 min @ 80% AeT HR
@@ -85,21 +87,18 @@ Need something different? Say so locally:
 - run 60 min <= AeT HR
 ```
 
-**Define once. Inherit. Override when necessary.**
+**Define defaults once. Override them where necessary.**
 
-## From simple workouts to real training
+## Training isn't always simple.
 
-TrainWhen is being designed against real training structures rather than only simple steady-state and interval workouts.
-
-One of its initial test cases is Verkhoshansky's explosive-strength progression for runners.
+TrainWhen is being designed against real training structures rather than only simple steady-state and interval workouts. One of its initial test cases is Verkhoshansky's explosive-strength progression for runners. ([source](https://www.verkhoshansky.com/Portals/0/Book/BTS%20in%20ER%20Index.pdf))
 
 The first session can be expressed as:
 
 ```text
-# Explosive Strength
+# Explosive Strength - A01
 
 - warmup: [[basic-ramp]]
-
 - 2 series
   - 6 sets
     - half-squat jump 8 reps @ 35-45% squat 1RM
@@ -111,33 +110,30 @@ The first session can be expressed as:
   - 10 min or until HR stabilizes
 ```
 
-The structure should be apparent without learning a compressed workout notation.
+Bullets represent a sequence; nesting, a hierarchy.
 
-Nesting carries meaning:
-
-- `rest` is passive rest between sets.
-- `recover` is active recovery between series.
-- recovery can have its own prescription and is not necessarily easy.
-- warmups and cooldowns reference reusable workouts.
-- a RAMP warmup may also be prescribed as a complete workout.
-
-For example, an active recovery could be:
+`rest` is always *passive* rest between sets. `recover` is always active recovery between series or sets. Recovery may have its own prescription and does not necessarily mean easy:
 
 ```text
 - recover 400 m @ marathon pace
 ```
 
-TrainWhen can also derive rather than duplicate information:
+Warmups and cooldowns are reusable workouts. A RAMP warmup can also be prescribed as a complete workout—for example, when it represents an appropriate session for an athlete just starting out.
 
-```text
-2 series × 6 sets × 8 reps = 96 jumps
-```
+## Progressions are first-class.
 
-## Progressions are first-class
+Training is not merely a collection of independent workouts. A **progression** describes how training changes over time.
 
-Training is not merely a collection of independent workouts.
+It may change:
 
-A **progression** describes how training changes across exposures. It can change exercise, volume, load, intensity, tempo, rest, recovery, or other prescription variables.
+- exercise
+- volume
+- load
+- intensity
+- tempo
+- rest
+- recovery
+- or other prescription variables
 
 Verkhoshansky's 16-session explosive-strength sequence is an initial TrainWhen design test:
 
@@ -160,33 +156,25 @@ A15  SJ  4 series × 10 sets × 10 reps   rest 10 s   recover 14 min
 A16  LJ  4 series × 10 sets × 10 reps   rest 10 s   recover 14 min
 ```
 
-`SJ` is a half-squat jump—not a full squat jump.
+(`SJ` is a half-squat jump—not a full squat jump. `LJ` is an alternating lunge jump.)
 
-`LJ` is an alternating lunge jump.
+The compact representation is useful for titles and summaries. The canonical executable prescription remains explicit and nested so that a human does not have to memorize positional shorthand.
 
-The compact representation is useful for titles and summaries. The canonical executable prescription remains explicit and nested so a human does not have to memorize positional shorthand.
+### Don't repeat a shared prescription.
 
-### Don't repeat shared prescription
-
-If all 16 sessions use the same warmup, cooldown, load, tempo, or other prescription, those values should not be copied sixteen times.
-
-They belong at the progression level and are inherited by its workouts.
+If all 16 sessions use the same warmup, cooldown, load, or other prescription, those values should not be copied into all 16 workouts. They belong at the progression level and are inherited by its workouts.
 
 An individual workout specifies something again only when it differs.
 
-> **Define a value once at the highest useful scope. Inherit it downward. Override it explicitly where necessary.**
+**Define a value once at the highest useful scope. Inherit it downward. Override it explicitly where necessary.**
 
 ### Gateways
 
-A progression may eventually have a **gateway**: a readiness workout or assessment that determines whether an athlete is ready for the progression and where that athlete should enter it.
-
-An advanced athlete should not necessarily have to begin at A01.
-
-A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
+Progressions should ideally have **gateway** workouts: a readiness test that determines whether an athlete is ready for the progression and where that athlete should enter it. A more advanced athlete should not necessarily have to begin at A01. A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
 
 The exact gateway and advancement grammar is not part of v0.0.1.
 
-## Compose training
+## Compose training.
 
 TrainWhen's training hierarchy is:
 
@@ -220,20 +208,22 @@ A more sophisticated plan might use:
 workout → progression → microcycle → mesocycle → plan
 ```
 
-TrainWhen does not assume seven-day training cycles. A microcycle might contain 7, 10, 14, or another number of days.
+TrainWhen does not assume seven-day microcycles. They may contain 7, 10, 14, or another number of days.
 
 Coaches and athletes are also first-class TrainWhen objects. They provide context used by the training hierarchy rather than sitting inside it.
 
-## Build a library, not a pile of copies
+## Build a library, not a pile of copies.
 
-TrainWhen objects are readable Markdown files connected by wiki links.
+TrainWhen objects are readable Markdown files.
+
+TrainWhen uses Obsidian wiki links to connect canonical objects throughout the library rather than copying their contents.
 
 An early project might look like:
 
 ```text
 trainwhen/
 ├── coach.md
-├── athlete.md
+├── athletes/
 ├── exercises/
 ├── workouts/
 ├── progressions/
@@ -249,9 +239,7 @@ workouts/
 └── explosive-strength.md
 ```
 
-Workouts, exercises, progressions, athletes, coaches, and plans can reference canonical objects elsewhere in the library rather than copying their contents.
-
-A warmup such as `basic-ramp` remains an ordinary reusable workout. Its role is explicit when another workout uses it:
+A warmup such as `basic-ramp` remains an ordinary reusable workout. The role is explicit when another workout uses it:
 
 ```text
 - warmup: [[basic-ramp]]
@@ -263,15 +251,17 @@ Likewise:
 - cooldown: [[easy-aerobic]]
 ```
 
-A referenced object has one canonical source. Change `[[basic-ramp]]`, for example, and every workout that references it resolves to the updated workout rather than retaining an outdated copy.
+A referenced object has one canonical source. Changes to `[[basic-ramp]]`, for example, are available wherever that workout is referenced rather than requiring copies to be found and updated individually.
 
-The filesystem organizes TrainWhen objects; it does not determine their semantics.
+The filesystem organizes TrainWhen objects; it should not determine their semantics.
 
-### Write once, reference later
+### Write once, reference later.
+
+Copying workouts into every training plan defeats the purpose of having structured source.
 
 TrainWhen uses Obsidian wiki links to reference canonical objects throughout the training library.
 
-Planning can therefore be concise:
+Planning can therefore be approximately this simple:
 
 ```text
 Day 1
@@ -286,7 +276,7 @@ Day 5
 
 A coach builds the training library once and prescribes from it.
 
-The same mechanism connects other objects:
+The same mechanism can connect other objects:
 
 ```text
 # Plan
@@ -295,11 +285,11 @@ coach: [[coach-canova]]
 athlete: [[athlete-mosop]]
 ```
 
-Obsidian's links, backlinks, and link-aware renaming make the library practical to maintain as it grows.
+Obsidian's links, backlinks, and link-aware renaming can help maintain those relationships as a training library grows.
 
 ## Exercises
 
-Exercises can be first-class objects when doing so is useful.
+Exercises can also be first-class objects when doing so is useful.
 
 A simple endurance activity does not require an exercise file:
 
@@ -307,7 +297,7 @@ A simple endurance activity does not require an exercise file:
 - run 45 min @ 80%
 ```
 
-But a technical exercise such as a half-squat jump may benefit from a reusable definition containing:
+But a technical exercise such as a half-squat jump may benefit from a reusable definition containing information such as:
 
 - name
 - abbreviation
@@ -322,11 +312,11 @@ The workout or progression describes how that exercise is prescribed.
 
 For example, `35-45% squat 1RM` belongs to the explosive-strength prescription, not intrinsically to the definition of a half-squat jump.
 
-## Markdown first
+## Markdown first.
 
 TrainWhen uses **Obsidian-flavored Markdown** as its baseline document format.
 
-This provides established conventions for linking and maintaining a library of training objects without requiring TrainWhen to invent them.
+This gives TrainWhen established conventions for linking and maintaining a library of training objects without requiring TrainWhen-specific syntax for those problems.
 
 Wiki links provide explicit, human-readable references:
 
@@ -338,13 +328,7 @@ Wiki links provide explicit, human-readable references:
 
 TrainWhen adopts Obsidian conventions where they solve a TrainWhen problem cleanly. Wiki links are the first important example.
 
-Where Markdown already has an established convention, TrainWhen should use it rather than inventing an alternative. For example, Markdown comments use HTML comment syntax:
-
-```text
-<!-- This is a comment. -->
-```
-
-TrainWhen does not need to invent `//` comments.
+TrainWhen adds deterministic training syntax only where Markdown does not express the required training semantics.
 
 Its structured training syntax favors familiar conventions:
 
@@ -364,29 +348,19 @@ Hyphens identify ordered executable items:
 - run 10 min @ easy
 ```
 
-TrainWhen adds syntax only where Markdown does not express the required training semantics:
+TrainWhen files remain plain text. Obsidian is not required to parse or execute TrainWhen, and the deterministic meaning of a training prescription is defined by TrainWhen rather than by an application or plugin.
 
-```text
-- run 45 min @ 80%
+TrainWhen files are not YAML documents, and TrainWhen does not require YAML configuration or front matter unless a future requirement demonstrates a need for it.
 
-- 2 series
-  - 6 sets
-    - half-squat jump 8 reps
-    - rest 60 s
-  - recover 10 min
-```
+### Use the ecosystem.
 
-Obsidian is not required to parse or execute TrainWhen. The files remain plain text, and the deterministic meaning of training prescriptions is defined by TrainWhen.
+Using Obsidian-flavored Markdown gives coaches and athletes access to an established ecosystem of desktop and mobile apps, plugins, links, backlinks, graph navigation, search, synchronization, and other tooling.
 
-### Use the ecosystem
-
-Using Obsidian-flavored Markdown gives coaches and athletes access to an established ecosystem of desktop and mobile apps, plugins, wiki links, backlinks, graph navigation, search, synchronization, and other tooling.
-
-Markwhen's Obsidian integration is particularly relevant to TrainWhen. A TrainWhen parser can generate Markwhen representations for calendars, timelines, Gantt charts, and, where relevant, maps while the Markdown training library remains canonical.
+Markwhen's Obsidian plugin is particularly relevant to TrainWhen. A TrainWhen parser or adapter can generate Markwhen representations for calendars, timelines, Gantt charts, and, where relevant, maps while the Markdown training library remains canonical.
 
 These are generated views, not the source of truth.
 
-## The source is yours
+## Plain text is canonical.
 
 The TrainWhen source is the source of truth.
 
@@ -395,28 +369,22 @@ Vendor formats and visualizations are generated representations:
 ```text
                          TrainWhen
                             │
-          ┌─────────────────┼─────────────────┐
-          │                 │                 │
-          ▼                 ▼                 ▼
-       Obsidian          Markwhen          Garmin
-          │                 │                 │
-          │          calendars / Gantt        ▼
-          │          timelines / maps        FIT
-          │
-          ├── links / backlinks
-          └── editing / plugins
+            ┌───────────────┼───────────────┐
+            │               │               │
+            ▼               ▼               ▼
+          Garmin       Intervals.icu       CSV
+            │
+            ▼
+           FIT
 
-                  + Intervals.icu
-                  + TrainingPeaks
-                  + CSV
-                  + calendars
-                  + dashboards
-                  + other adapters
+       + Obsidian, calendars,
+         Markwhen, Mermaid,
+         dashboards, and other adapters
 ```
 
-Obsidian can provide an editing environment and ecosystem. Markwhen can provide generated temporal views. Training platforms can receive or provide training data.
+Obsidian can provide an editing environment and plugin ecosystem. Markwhen can provide generated temporal views. Neither defines the canonical TrainWhen source.
 
-None of them defines the canonical TrainWhen source.
+A vendor's syntax does not define TrainWhen's syntax.
 
 If an external platform uses nonstandard notation—for example, `mtr` instead of the international standard `m` for metre—TrainWhen's adapter should handle the translation.
 
@@ -479,7 +447,7 @@ TrainWhen is not intended to:
 - make a proprietary training platform the canonical copy of a plan
 - require specialized software to read a workout
 - require AI to interpret canonical syntax
-- assume every training cycle is seven days
+- assume that every training cycle is seven days
 - force every coach to use every level of the hierarchy
 - duplicate athlete values throughout workout definitions
 - duplicate shared prescription throughout a progression
@@ -488,11 +456,9 @@ TrainWhen is not intended to:
 
 ## Project status
 
-TrainWhen is currently an experimental language design moving toward its first parser.
+TrainWhen is currently an experimental language design moving toward its first parser. The syntax shown here is intended to communicate the direction of the project, not promise backward compatibility.
 
-The syntax shown here communicates the direction of the project; it does not promise backward compatibility.
-
-Examples and counterexamples are particularly valuable at this stage. The grammar should be driven by real training prescriptions rather than abstract language design.
+Examples and counterexamples are particularly valuable at this stage: the grammar should be driven by real training prescriptions rather than abstract language design.
 
 ## License
 
