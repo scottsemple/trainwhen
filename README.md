@@ -2,7 +2,7 @@
 
 **Training plans should belong to coaches and athletes, not training platforms.**
 
-TrainWhen is an open, plain-text system for writing workouts, workout progressions, and training plans. The canonical source is readable Markdown. It can be versioned with Git, shared without proprietary software, and eventually exported to training platforms, calendars, FIT files, CSV, and other formats.
+TrainWhen is an open, plain-text system for writing workouts, workout progressions, and training plans. The canonical source is readable **Obsidian-flavored Markdown**. It can be versioned with Git, shared without proprietary software, reused instead of copied, and eventually exported to training platforms, calendars, FIT files, CSV, and other formats.
 
 ```text
 write once → understand it → reuse it → export anywhere
@@ -18,7 +18,7 @@ write once → understand it → reuse it → export anywhere
 An athlete or coach should substantially understand a TrainWhen file before reading the official specification.
 
 **Markdown first.**  
-Use established plain-text conventions where they work. Add TrainWhen syntax only when the training domain requires it.
+Use established Markdown conventions where they work. TrainWhen uses Obsidian-flavored Markdown as its baseline and adds syntax only where training semantics require it.
 
 **Don't repeat yourself.**  
 Define shared information once, inherit it, and override it only where necessary.
@@ -60,11 +60,11 @@ An athlete supplies individual benchmark values:
 ```text
 # Athlete
 
-benchmark:
+benchmarks:
   run:
-    AnT HR: 172 bpm
-    AeT HR: 163 bpm
-    FTP: 285 W
+    AnT HR: 179 bpm
+    AnT pace: 4.5 min/km
+    HM: 5.69 min/km
   bike:
     AnT HR: 159 bpm
     AeT HR: 141 bpm
@@ -98,8 +98,7 @@ The first session can be expressed as:
 ```text
 # Explosive Strength - A01
 
-- warmup: basic-ramp
-
+- warmup: [[basic-ramp]]
 - 2 series
   - 6 sets
     - half-squat jump 8 reps @ 35-45% squat 1RM
@@ -107,7 +106,7 @@ The first session can be expressed as:
     - rest 60 s
   - recover 10 min
 
-- cooldown: easy-aerobic
+- cooldown: [[easy-aerobic]]
   - 10 min or until HR stabilizes
 ```
 
@@ -171,7 +170,7 @@ An individual workout specifies something again only when it differs.
 
 ### Gateways
 
-Progression should ideally have **gateway** workouts: a readiness test that determines whether an athlete is ready for the progression and where that athlete should enter it. A more advanced athlete should not necessarily have to begin at A01. A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
+Progressions should ideally have **gateway** workouts: a readiness test that determines whether an athlete is ready for the progression and where that athlete should enter it. A more advanced athlete should not necessarily have to begin at A01. A beginner may not yet qualify for the progression or may require a scaled preparatory progression.
 
 The exact gateway and advancement grammar is not part of v0.0.1.
 
@@ -217,6 +216,8 @@ Coaches and athletes are also first-class TrainWhen objects. They provide contex
 
 TrainWhen objects are readable Markdown files.
 
+TrainWhen uses Obsidian wiki links to connect canonical objects throughout the library rather than copying their contents.
+
 An early project might look like:
 
 ```text
@@ -241,14 +242,16 @@ workouts/
 A warmup such as `basic-ramp` remains an ordinary reusable workout. The role is explicit when another workout uses it:
 
 ```text
-- warmup: basic-ramp
+- warmup: [[basic-ramp]]
 ```
 
 Likewise:
 
 ```text
-- cooldown: easy-aerobic
+- cooldown: [[easy-aerobic]]
 ```
+
+A referenced object has one canonical source. Changes to `[[basic-ramp]]`, for example, are available wherever that workout is referenced rather than requiring copies to be found and updated individually.
 
 The filesystem organizes TrainWhen objects; it should not determine their semantics.
 
@@ -256,24 +259,33 @@ The filesystem organizes TrainWhen objects; it should not determine their semant
 
 Copying workouts into every training plan defeats the purpose of having structured source.
 
-TrainWhen objects and progression exposures will therefore have stable, human-readable identifiers.
+TrainWhen uses Obsidian wiki links to reference canonical objects throughout the training library.
 
-The eventual planning experience should be approximately this simple:
+Planning can therefore be approximately this simple:
 
 ```text
 Day 1
-- verk-a-01
+- [[verk-a-01]]
 
 Day 3
-- easy-run
+- [[easy-run]]
 
 Day 5
-- basic-ramp
+- [[basic-ramp]]
 ```
 
 A coach builds the training library once and prescribes from it.
 
-The exact reference syntax is still being designed.
+The same mechanism can connect other objects:
+
+```text
+# Plan
+
+coach: [[coach-canova]]
+athlete: [[athlete-mosop]]
+```
+
+Obsidian's links, backlinks, and link-aware renaming can help maintain those relationships as a training library grows.
 
 ## Exercises
 
@@ -302,9 +314,21 @@ For example, `35-45% squat 1RM` belongs to the explosive-strength prescription, 
 
 ## Markdown first.
 
-TrainWhen uses Markdown as its document format and adds deterministic training syntax only where training semantics require it.
+TrainWhen uses **Obsidian-flavored Markdown** as its baseline document format.
 
-Where established Markdown conventions already solve a problem, TrainWhen should use them rather than inventing alternatives.
+This gives TrainWhen established conventions for linking and maintaining a library of training objects without requiring TrainWhen-specific syntax for those problems.
+
+Wiki links provide explicit, human-readable references:
+
+```text
+[[basic-ramp]]
+[[easy-aerobic]]
+[[verkhoshansky-explosive-strength]]
+```
+
+TrainWhen adopts Obsidian conventions where they solve a TrainWhen problem cleanly. Wiki links are the first important example.
+
+TrainWhen adds deterministic training syntax only where Markdown does not express the required training semantics.
 
 Its structured training syntax favors familiar conventions:
 
@@ -324,7 +348,17 @@ Hyphens identify ordered executable items:
 - run 10 min @ easy
 ```
 
-TrainWhen files remain Markdown. They are not YAML documents, and TrainWhen does not require YAML configuration or front matter unless a future requirement demonstrates a need for it.
+TrainWhen files remain plain text. Obsidian is not required to parse or execute TrainWhen, and the deterministic meaning of a training prescription is defined by TrainWhen rather than by an application or plugin.
+
+TrainWhen files are not YAML documents, and TrainWhen does not require YAML configuration or front matter unless a future requirement demonstrates a need for it.
+
+### Use the ecosystem.
+
+Using Obsidian-flavored Markdown gives coaches and athletes access to an established ecosystem of desktop and mobile apps, plugins, links, backlinks, graph navigation, search, synchronization, and other tooling.
+
+Markwhen's Obsidian plugin is particularly relevant to TrainWhen. A TrainWhen parser or adapter can generate Markwhen representations for calendars, timelines, Gantt charts, and, where relevant, maps while the Markdown training library remains canonical.
+
+These are generated views, not the source of truth.
 
 ## Plain text is canonical.
 
@@ -343,14 +377,16 @@ Vendor formats and visualizations are generated representations:
             ▼
            FIT
 
-       + calendars, Markwhen,
-         Mermaid, dashboards,
-         and other adapters
+       + Obsidian, calendars,
+         Markwhen, Mermaid,
+         dashboards, and other adapters
 ```
+
+Obsidian can provide an editing environment and plugin ecosystem. Markwhen can provide generated temporal views. Neither defines the canonical TrainWhen source.
 
 A vendor's syntax does not define TrainWhen's syntax.
 
-If an external platform requires a nonstandard representation—for example, `mtr` rather than the international standard of `m` for metres—the adapter should translate it.
+If an external platform uses nonstandard notation—for example, `mtr` instead of the international standard `m` for metre—TrainWhen's adapter should handle the translation.
 
 TrainWhen remains:
 
@@ -389,7 +425,6 @@ Likely subsequent work includes:
 
 - complete progression grammar
 - shared progression defaults and overrides
-- stable object references
 - gateway and advancement logic
 - microcycles
 - mesocycles and macrocycles
@@ -417,6 +452,7 @@ TrainWhen is not intended to:
 - duplicate athlete values throughout workout definitions
 - duplicate shared prescription throughout a progression
 - inherit awkward vendor syntax merely for compatibility
+- require Obsidian to parse or execute training
 
 ## Project status
 
